@@ -3,9 +3,12 @@ package org.formacio.setmana2.repositori;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import org.formacio.setmana2.domini.Alumne;
 import org.formacio.setmana2.domini.Curs;
 import org.formacio.setmana2.domini.Matricula;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Modifica aquesta classe per tal que sigui un component Spring que realitza les 
@@ -17,16 +20,25 @@ public class RepositoriEscola {
 	
 	@PersistenceContext
 	EntityManager em;
-
+	
 	
 	public Curs carregaCurs(String nom) {
 		Curs curs = em.find(Curs.class, nom);
 		return curs;
 	}
 	
+	public Alumne carregaAlumne(String nom) {
+		Alumne alumne = em.find(Alumne.class, nom);
+		return alumne;
+	}
 	
+	@Transactional
 	public Matricula apunta (String alumne, String curs) throws EdatIncorrecteException {
-	    return null;	
+	    Matricula matricula = new Matricula();
+	    matricula.setAlumne(carregaAlumne(alumne));
+	    matricula.setCurs(carregaCurs(curs));
+	    em.persist(matricula);
+	    return matricula;
 	}
 	
 	
